@@ -9,12 +9,21 @@ public class User implements Comparable<User> {
 
     private String password;
 
+    private String coor;
+
     public User(){}
 
     public User(String name, String mail, String password) {
         this.name = name;
         this.mail = mail;
         this.password = password;
+    }
+
+    public User(String name, String mail, String password, String coor) {
+        this.name = name;
+        this.mail = mail;
+        this.password = password;
+        this.coor = coor;
     }
 
     public String getName() {
@@ -48,6 +57,10 @@ public class User implements Comparable<User> {
     public void setId(long id) {
         this.id = id;
     }
+
+    public String getCoor(){return coor;}
+
+    public void setCoor(String coorNew){this.coor = coorNew;}
 
     @Override
     public boolean equals(Object o) {
