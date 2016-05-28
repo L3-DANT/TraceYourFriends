@@ -24,6 +24,7 @@ public class UsersDAO implements DAO{
     private static final String SQL_SELECT_USER_BY_NAME = "SELECT * FROM users WHERE name = ?";
 	private static final String SQL_INSERT_USER = "INSERT INTO users (name, email, password) VALUES (?, ?, ?)";
     private static final String SQL_SELECT_USER = "SELECT * FROM users";
+	private static final String SQL_SELECT_FRIENDS = "SELECT * FROM users u, amis a WHERE a.ID_USER1 = ? AND u.ID = a.ID_USER2";
 
     private final Connection connection = SQLConnection.getSQLCon().getDbCon();
 
@@ -132,6 +133,22 @@ public class UsersDAO implements DAO{
 		User user = new User(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
 		user.setId(resultSet.getInt(1));
 		return user;
+	}
+
+	@Override
+	public List<User> findFriends(User user) throws SQLException {
+		List<User> users = new ArrayList<>();
+		try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_FRIENDS)) {
+			String id = Long.toString(user.getId());
+			preparedStatement.setString(1, id); //protect against sql injection
+			preparedStatement.execute();
+			try(ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					users.add(convertFromResultSet(resultSet));
+				}
+			}
+		}
+		return users;
 	}
 
 
